@@ -1,0 +1,17 @@
+name: Deploy to Minikube
+
+on:
+  pull_request:
+    branches: [master]
+
+jobs:
+  deploy:
+    runs-on: self-hosted
+    steps:
+      - uses: actions/checkout@v4
+
+      - name: Build and push image
+        run: docker build -t my-app:${{ github.sha }} .
+
+      - name: Deploy to cluster
+        run: kubectl set image deployment/my-app my-app=my-app:${{ github.sha }}
