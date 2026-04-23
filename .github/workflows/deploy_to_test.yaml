@@ -1,4 +1,4 @@
-name: Deploy to Minikube
+name: Deploy to Minikube test
 
 on:
   pull_request:
