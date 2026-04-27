@@ -4,6 +4,7 @@ from rest_framework.response import Response
 from django.utils import timezone
 from django.db.models import Q
 
+from authentication.authentication import SessionAuthentication
 from .models import User, Expedition, ExpeditionMember
 from .serializers import (
     UserSerializer, UserCreateSerializer,
@@ -33,6 +34,7 @@ class IsExpeditionChief(permissions.BasePermission):
 class UserViewSet(viewsets.ModelViewSet):
     queryset = User.objects.all()
     serializer_class = UserSerializer
+    authentication_classes = [SessionAuthentication]
 
     def get_serializer_class(self):
         if self.action == 'create':
@@ -53,6 +55,7 @@ class UserViewSet(viewsets.ModelViewSet):
 
 class ExpeditionViewSet(viewsets.ModelViewSet):
     serializer_class = ExpeditionSerializer
+    authentication_classes = [SessionAuthentication]
 
     def get_queryset(self):
         """Return expeditions where user is chief or member."""
