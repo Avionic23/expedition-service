@@ -10,6 +10,9 @@ DEBUG = os.environ.get('DEBUG', 'True').lower() == 'true'
 
 ALLOWED_HOSTS = os.environ.get('ALLOWED_HOSTS', 'localhost,127.0.0.1').split(',')
 
+SESSION_DB_TTL = timedelta(days=7)
+SESSION_REDIS_TTL = 60 * 60 * 3
+
 INSTALLED_APPS = [
     'daphne',
     'django.contrib.admin',
@@ -22,6 +25,7 @@ INSTALLED_APPS = [
     'rest_framework_simplejwt',
     'channels',
     'expeditions',
+    'authentication',
 ]
 
 MIDDLEWARE = [
@@ -98,6 +102,13 @@ if os.environ.get('DATABASE_URL'):
             }
         }
 
+CACHES = {
+      'default': {
+          'BACKEND': 'django.core.cache.backends.redis.RedisCache',
+          'LOCATION': os.environ.get('REDIS_URL', 'redis://localhost:6379'),
+      }
+  }
+
 AUTH_PASSWORD_VALIDATORS = [
     {'NAME': 'django.contrib.auth.password_validation.UserAttributeSimilarityValidator'},
     {'NAME': 'django.contrib.auth.password_validation.MinimumLengthValidator'},
@@ -118,9 +129,9 @@ DEFAULT_AUTO_FIELD = 'django.db.models.BigAutoField'
 
 # REST Framework
 REST_FRAMEWORK = {
-    'DEFAULT_AUTHENTICATION_CLASSES': (
-        'rest_framework_simplejwt.authentication.JWTAuthentication',
-    ),
+    # 'DEFAULT_AUTHENTICATION_CLASSES': (
+    #     'rest_framework_simplejwt.authentication.JWTAuthentication',
+    # ),
     'DEFAULT_PERMISSION_CLASSES': (
         'rest_framework.permissions.IsAuthenticated',
     ),
