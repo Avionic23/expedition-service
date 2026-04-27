@@ -10,8 +10,8 @@ jobs:
     steps:
       - uses: actions/checkout@v4
 
-      - name: Build and push image
-        run: docker build -t expedition-service:${{ github.sha }} .
+      - name: Build image inside Minikube
+        run: minikube image build -t expedition-service:${{ github.sha }} .
 
       - name: Deploy to cluster
         run: kubectl set image deployment/expedition-service expedition-service=expedition-service:${{ github.sha }}
