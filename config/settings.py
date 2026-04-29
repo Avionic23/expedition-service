@@ -12,6 +12,7 @@ ALLOWED_HOSTS = os.environ.get('ALLOWED_HOSTS', 'localhost,127.0.0.1').split(','
 
 SESSION_DB_TTL = timedelta(days=7)
 SESSION_REDIS_TTL = 60 * 60 * 3
+MAX_SESSIONS = 7
 
 INSTALLED_APPS = [
     'daphne',
