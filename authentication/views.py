@@ -6,9 +6,33 @@ from rest_framework.decorators import action
 from rest_framework.response import Response
 from django.conf import settings
 
-from expeditions.models import User
-from .serializers import SessionCreateSerializer, SessionSerializer, SessionInvalidateSerializer
-from .models import Session
+from .serializers import (
+    SessionCreateSerializer, SessionSerializer,
+    SessionInvalidateSerializer, UserSerializer, UserCreateSerializer
+)
+from .models import Session, User
+from .authentication import SessionAuthentication
+
+class UserViewSet(viewsets.ModelViewSet):
+    queryset = User.objects.all()
+    serializer_class = UserSerializer
+    authentication_classes = [SessionAuthentication]
+
+    def get_serializer_class(self):
+        if self.action == 'create':
+            return UserCreateSerializer
+        return UserSerializer
+
+    def get_permissions(self):
+        if self.action == 'create':
+            return [permissions.AllowAny()]
+        return [permissions.IsAuthenticated()]
+
+    @action(detail=False, methods=['get'])
+    def me(self, request):
+        """Get current user profile."""
+        serializer = self.get_serializer(request.user)
+        return Response(serializer.data)
 
 class SessionViewSet(viewsets.ModelViewSet):
     permission_classes = [permissions.AllowAny]

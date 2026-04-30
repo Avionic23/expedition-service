@@ -5,8 +5,7 @@ from rest_framework.authentication import BaseAuthentication
 from rest_framework.exceptions import AuthenticationFailed
 
 from config import settings
-from .models import Session
-from expeditions.models import User
+from .models import Session, User
 
 class SessionAuthentication(BaseAuthentication):
     def authenticate(self, request: HttpRequest):

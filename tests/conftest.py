@@ -4,7 +4,8 @@ from datetime import timedelta
 from django.utils import timezone
 from rest_framework.test import APIClient
 
-from expeditions.models import Expedition, ExpeditionMember, User
+from expeditions.models import Expedition, ExpeditionMember
+from authentication.models import User
 
 
 @pytest.fixture

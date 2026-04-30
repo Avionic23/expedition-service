@@ -1,26 +1,7 @@
 from rest_framework import serializers
-from django.contrib.auth.password_validation import validate_password
-from .models import User, Expedition, ExpeditionMember
-
-
-class UserSerializer(serializers.ModelSerializer):
-    class Meta:
-        model = User
-        fields = ['id', 'email', 'name', 'role', 'created_at', 'updated_at']
-        read_only_fields = ['id', 'created_at', 'updated_at']
-
-
-class UserCreateSerializer(serializers.ModelSerializer):
-    password = serializers.CharField(write_only=True, validators=[validate_password])
-
-    class Meta:
-        model = User
-        fields = ['id', 'email', 'name', 'role', 'password', 'created_at', 'updated_at']
-        read_only_fields = ['id', 'created_at', 'updated_at']
-
-    def create(self, validated_data):
-        return User.objects.create_user(**validated_data)
-
+from .models import Expedition, ExpeditionMember
+from authentication.models import User
+from authentication.serializers import UserSerializer
 
 class ExpeditionMemberSerializer(serializers.ModelSerializer):
     user = UserSerializer(read_only=True)

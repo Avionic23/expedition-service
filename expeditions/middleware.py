@@ -5,7 +5,7 @@ from django.contrib.auth.models import AnonymousUser
 from rest_framework_simplejwt.tokens import AccessToken
 from rest_framework_simplejwt.exceptions import InvalidToken, TokenError
 
-from .models import User
+from authentication.models import User
 
 
 @database_sync_to_async
