@@ -1,6 +1,26 @@
+from django.contrib.auth.password_validation import validate_password
 from rest_framework import serializers
-from expeditions.models import User
-from .models import Session
+
+from .models import Session, User
+
+class UserSerializer(serializers.ModelSerializer):
+    class Meta:
+        model = User
+        fields = ['id', 'email', 'name', 'role', 'created_at', 'updated_at']
+        read_only_fields = ['id', 'created_at', 'updated_at']
+
+
+class UserCreateSerializer(serializers.ModelSerializer):
+    password = serializers.CharField(write_only=True, validators=[validate_password])
+
+    class Meta:
+        model = User
+        fields = ['id', 'email', 'name', 'role', 'password', 'created_at', 'updated_at']
+        read_only_fields = ['id', 'created_at', 'updated_at']
+
+    def create(self, validated_data):
+        return User.objects.create_user(**validated_data)
+
 
 class SessionSerializer(serializers.ModelSerializer):
     class Meta:

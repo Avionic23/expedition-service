@@ -1,6 +1,7 @@
 from django.contrib import admin
 from django.contrib.auth.admin import UserAdmin as BaseUserAdmin
-from .models import User, Expedition, ExpeditionMember
+from .models import Expedition, ExpeditionMember
+from authentication.models import User
 
 
 @admin.register(User)

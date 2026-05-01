@@ -4,15 +4,15 @@ from rest_framework.response import Response
 from django.utils import timezone
 from django.db.models import Q
 
-from authentication.authentication import SessionAuthentication
-from .models import User, Expedition, ExpeditionMember
+from .models import Expedition, ExpeditionMember
 from .serializers import (
-    UserSerializer, UserCreateSerializer,
     ExpeditionSerializer, ExpeditionCreateSerializer,
     ExpeditionStatusSerializer, InviteMemberSerializer,
     ExpeditionMemberSerializer
 )
 from .events import WebSocketEventService
+from authentication.authentication import SessionAuthentication
+from authentication.models import User
 
 
 class IsChief(permissions.BasePermission):
@@ -29,28 +29,6 @@ class IsExpeditionChief(permissions.BasePermission):
         if isinstance(obj, Expedition):
             return obj.chief == request.user
         return False
-
-
-class UserViewSet(viewsets.ModelViewSet):
-    queryset = User.objects.all()
-    serializer_class = UserSerializer
-    authentication_classes = [SessionAuthentication]
-
-    def get_serializer_class(self):
-        if self.action == 'create':
-            return UserCreateSerializer
-        return UserSerializer
-
-    def get_permissions(self):
-        if self.action == 'create':
-            return [permissions.AllowAny()]
-        return [permissions.IsAuthenticated()]
-
-    @action(detail=False, methods=['get'])
-    def me(self, request):
-        """Get current user profile."""
-        serializer = self.get_serializer(request.user)
-        return Response(serializer.data)
 
 
 class ExpeditionViewSet(viewsets.ModelViewSet):
