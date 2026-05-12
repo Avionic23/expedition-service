@@ -8,6 +8,8 @@ from config import settings
 from .models import Session, User
 
 class SessionAuthentication(BaseAuthentication):
+    def authenticate_header(self, request):
+        return 'Bearer'
     def authenticate(self, request: HttpRequest):
         header = request.headers.get("Authorization")
         if not header:
