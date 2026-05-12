@@ -5,14 +5,14 @@ from collections import defaultdict
 
 class CycleDetector:
     def __init__(self, root):
-        self.root = os.path.abspath(root)
-        self.dirs = set()
+        self._root = os.path.abspath(root)
+        self._dirs = set()
 
     def add_directory(self, directory):
-        self.dirs.add(self.root+directory)
+        self._dirs.add(self._root+directory)
 
     @staticmethod
-    def find_imports(filepath):
+    def _find_imports(filepath):
         with open(filepath, 'r') as f:
             tree = ast.parse(f.read())
 
@@ -27,7 +27,7 @@ class CycleDetector:
         return imports
 
     @staticmethod
-    def detect_cycles(graph):
+    def _detect_cycles(graph):
         visited = set()
         in_stack = set()
         cycles = []
@@ -53,21 +53,21 @@ class CycleDetector:
 
         return cycles
 
-    def build_dependency_graph(self, project_path):
+    def _build_dependency_graph(self, project_path):
         graph = defaultdict(set)
 
         for root, dirs, files in os.walk(project_path):
             for f in files:
                 if f.endswith('.py'):
                     filepath = os.path.join(root, f)
-                    module = filepath.replace(self.root, '').replace('/', '.').replace('.py', '').lstrip('.')
-                    imports = self.find_imports(filepath)
+                    module = filepath.replace(self._root, '').replace('/', '.').replace('.py', '').lstrip('.')
+                    imports = self._find_imports(filepath)
                     for imp in imports:
                         graph[module].add(imp)
         return graph
 
     def detect(self):
         graph = defaultdict(set)
-        for directory in self.dirs:
-            graph.update(self.build_dependency_graph(directory))
-        return self.detect_cycles(graph)
+        for directory in self._dirs:
+            graph.update(self._build_dependency_graph(directory))
+        return self._detect_cycles(graph)
